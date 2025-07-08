@@ -60,10 +60,7 @@ async def stock_monitor():
             if stock_element:
                 status = stock_element.text.strip().lower()
                 print(f"[INFO] Current stock status: {status}")
-                if "out of stock" not in status:
-                    send_telegram_alert(f"🚨 Product might be in stock!\n{PRODUCT_URL}")
-                    print("Cooldown for 1 hour...")
-                    await asyncio.sleep(3600)
+
             else:
                 # If no stock status found, assume back in stock
                 send_telegram_alert(f"🚨 Product is BACK IN STOCK!\n{PRODUCT_URL}")
