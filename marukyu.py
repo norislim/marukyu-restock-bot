@@ -41,6 +41,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("You're already subscribed.")
 
+    stock_monitor()
+
 # --- Send alert to all users ---
 def send_telegram_alert(message):
     chat_ids = load_chat_ids()
@@ -83,13 +85,12 @@ import asyncio
 async def main():
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    
-    # Start the bot and the stock checker
-    await asyncio.gather(
-        app.run_polling(),  # Run the bot
-        stock_monitor()     # Start the stock monitor loop
+    await (
+    stock_monitor(),
+    app.run_polling()
     )
 
-
+    
+# Main entry point
 if __name__ == "__main__":
-    asyncio.create_task(main())
+    asyncio.run(main())  # Or await main() if you're in a running event loop
