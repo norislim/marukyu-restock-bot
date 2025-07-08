@@ -83,10 +83,13 @@ import asyncio
 async def main():
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-
+    
     # Start the bot and the stock checker
-    asyncio.create_task(stock_monitor())
-    await app.run_polling()
+    await asyncio.gather(
+        app.run_polling(),  # Run the bot
+        stock_monitor()     # Start the stock monitor loop
+    )
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.create_task(main())
