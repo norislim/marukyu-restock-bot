@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- Config ---
-PRODUCT_URL = "https://www.marukyu-koyamaen.co.jp/english/shop/products/1186000cc"  # 🔁 Replace with real product URL
+PRODUCT_URL = "https://www.marukyu-koyamaen.co.jp/english/shop/products/11a1040c1"  # 🔁 Replace with real product URL
 STOCK_SELECTOR = "p.stock.single-stock-status"  # 🔁 Replace with correct CSS selector
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
