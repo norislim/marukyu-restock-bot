@@ -5,6 +5,9 @@ import requests
 from bs4 import BeautifulSoup
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- Config ---
 PRODUCT_URL = "https://www.marukyu-koyamaen.co.jp/english/shop/products/1186000cc"
@@ -12,6 +15,8 @@ STOCK_SELECTOR = "p.stock.single-stock-status"
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_IDS_FILE = "chat_ids.json"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+
 
 # --- Chat ID management ---
 def load_chat_ids():
@@ -81,9 +86,7 @@ async def main():
 
     # Start the bot and the stock checker
     asyncio.create_task(stock_monitor())
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()
+    await app.run_polling()
 
 if __name__ == "__main__":
     asyncio.run(main())
