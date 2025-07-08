@@ -81,7 +81,9 @@ async def main():
 
     # Start the bot and the stock checker
     asyncio.create_task(stock_monitor())
-    await app.run_polling() 
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling()
 
 if __name__ == "__main__":
     asyncio.run(main())
