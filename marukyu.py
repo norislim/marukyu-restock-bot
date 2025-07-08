@@ -3,6 +3,9 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+import json
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 # Load environment variables (only needed when running locally)
 load_dotenv()
@@ -12,22 +15,47 @@ PRODUCT_URL = "https://www.marukyu-koyamaen.co.jp/english/shop/products/1186000c
 STOCK_SELECTOR = "p.stock.single-stock-status"  # 🔁 Replace with correct CSS selector
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+TELEGRAM_CHAT_ID =  "chat_ids.json"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hi! You started the bot.")
+
+def main():
+    app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
+
+def load_chat_ids():
+    if os.path.exists(TELEGRAM_CHAT_ID):
+        with open(TELEGRAM_CHAT_ID, "r") as f:
+            return json.load(f)
+    return []
+
+def save_chat_ids(chat_ids):
+    with open(TELEGRAM_CHAT_ID, "w") as f:
+        json.dump(chat_ids, f)
 
 # --- Send alert to Telegram ---
 def send_telegram_alert(message):
+    chat_ids = load_chat_ids()
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message
-    }
-    try:
-        response = requests.post(url, data=payload)
-        response.raise_for_status()
-        print("✅ Telegram alert sent.")
-    except Exception as e:
-        print(f"❌ Failed to send Telegram alert: {e}")
+    for chat_id in chat_ids:
+        payload = {
+            "chat_id": chat_id,
+            "text": message
+        }
+        try:
+            response = requests.post(url, data=payload)
+            response.raise_for_status()
+            print(f"✅ Telegram alert sent to {chat_id}.")
+        except Exception as e:
+            print(f"❌ Failed to send Telegram alert to {chat_id}: {e}")
 
 # --- Check the stock status ---
 def check_stock():
@@ -42,6 +70,9 @@ def check_stock():
 
         else:
             send_telegram_alert(f"🚨 Product is BACK IN STOCK!\n{PRODUCT_URL}")
+            send_telegram_alert(f"your backside is smelly")
+            print("Cooldown for 1 hour...")
+            time.sleep(3600)
 
     except Exception as e:
         print(f"❌ Error checking stock: {e}")
