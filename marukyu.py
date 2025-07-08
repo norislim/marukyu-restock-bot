@@ -82,11 +82,8 @@ async def main():
     app.add_handler(CommandHandler("start", start))
 
     # Start the bot and the stock checker
-    await app.initialize()
-    await app.start()
     asyncio.create_task(stock_monitor())
-    await app.updater.start_polling()
-    await app.updater.idle()
+    await app.run_polling()
 
 if __name__ == "__main__":
     asyncio.run(main())
