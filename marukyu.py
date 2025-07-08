@@ -26,6 +26,7 @@ def save_chat_ids(chat_ids):
 
 # --- Telegram /start handler ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print("Start command received")
     chat_id = str(update.effective_chat.id)
     chat_ids = load_chat_ids()
     if chat_id not in chat_ids:
@@ -80,9 +81,7 @@ async def main():
 
     # Start the bot and the stock checker
     asyncio.create_task(stock_monitor())
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling()   
+    await app.run_polling() 
 
 if __name__ == "__main__":
     asyncio.run(main())

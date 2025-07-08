@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
-import os
+import asyncio
 
-load_dotenv()
-print("DEBUG BOT TOKEN:", os.getenv("TELEGRAM_BOT_TOKEN"))
+async def main():
+    print("Hello")
+
+asyncio.run(main())
